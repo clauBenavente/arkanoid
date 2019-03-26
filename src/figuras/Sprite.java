@@ -33,6 +33,7 @@ public class Sprite implements Dibujable {
      */
     
     public Sprite(String[] filename) {
+        skin = new BufferedImage[filename.length];
         if (filename.length < 1) {
             throw new IllegalArgumentException("Insuficiente cantidad de nombres de fichero");
         }

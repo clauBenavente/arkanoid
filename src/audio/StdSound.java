@@ -8,7 +8,7 @@ import javax.sound.midi.*;
 
 /**
  * Sonido para juegos simples en clase.<br>
- * Permite reproducir sonido en ficheros de onda o midi, de manera asincrona una
+ * Permite reproducir sonido en ficheros de onda, de manera asincrona una
  * sola vez o en loop. <br>
  * Los metodos play() y loop() inician la reproduccion de un sonido en formato
  * .wav o au. stop() para la reproduccion<br>
