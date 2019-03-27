@@ -1,5 +1,8 @@
+
 import audio.StdSound;
-import figuras.Sprite;
+import figuras.base.Sprite;
+import java.awt.Color;
+import java.awt.event.KeyEvent;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
@@ -13,24 +16,43 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.Timer;
+import logic.GameLogic;
+
 /**
  *
- * @author victor
+ * @author Tu nombre
  */
-public class App extends javax.swing.JFrame {
+public class GameApp extends javax.swing.JFrame {
 
+    /**
+     * El set de teclas pulsadas. Contiene códigos de rastreo
+     */
     Set<Integer> teclasPulsadas;
+
+    /**
+     * El buffer donde dibujamos un fotograma
+     */
     BufferedImage buffer;
+
+    /**
+     * El temporizador, para indicar que se debe pintar un frame en el buffer
+     */
     Timer timer;
+
+    /**
+     * La lógica del juego, para no mezclarla con el frame
+     */
+    GameLogic logica;
     
-    // Sprites
-    Sprite pajaro;
-    BufferedImage fondo;
-    
-    
-    public App() {
+    /**
+     * Constructor del frame. Utilizalo para inicializar variables que no
+     * requieran la ventana visible
+     */
+    public GameApp() {
         initComponents();
         teclasPulsadas = new HashSet<>();
+        logica = new GameLogic();
+        this.setLocationRelativeTo(null);  // Centra el frame
     }
 
     /**
@@ -43,6 +65,10 @@ public class App extends javax.swing.JFrame {
     private void initComponents() {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Arkanoid");
+        setName("gameFrame"); // NOI18N
+        setPreferredSize(new java.awt.Dimension(500, 650));
+        setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowOpened(java.awt.event.WindowEvent evt) {
                 formWindowOpened(evt);
@@ -63,37 +89,45 @@ public class App extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * Éste método es invocado automáticamente para pintar el contenido del
+     * frame en la pantalla.
+     */
     @Override
     public void paint(Graphics g) {
         g.drawImage(buffer, 0, 0, null);
     }
 
-    
+    /**
+     * invocado por el timer para dibujar un fotograma en el buffer.
+     */
     private void pintarFotograma() {
+        // Acceder al contexto gráfico del buffer
         Graphics2D g = (Graphics2D) buffer.getGraphics();
-        
-        pajaro.dibujar(g);
+        // Dejamos que la lógica desencadene el trabajo duro.
+        logica.dibujarYActualizarTodo(g);  // https://u.nu/cubs
         repaint();
     }
-    
+
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         // Crear un temporizador e inicializarlo
-        timer = new Timer(40, (e) -> {pintarFotograma();});
+        timer = new Timer(40, (e) -> {
+            pintarFotograma();
+        });
         timer.start();
-        
+
         // Crear el buffer
         buffer = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_RGB);
-        
+
         // Crear el manejador de eventos de teclado
         addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
-                // No hacer nada
+                /* Nada */
             }
 
             @Override
             public void keyPressed(KeyEvent e) {
-                // Tecla pulsada
                 teclasPulsadas.add(e.getKeyCode());
             }
 
@@ -102,21 +136,6 @@ public class App extends javax.swing.JFrame {
                 teclasPulsadas.remove(e.getKeyCode());
             }
         });
-        
-        // Imagen de fondo       
-        try {
-            fondo = ImageIO.read(new File("assets\\img\\nature-background.jpg"));
-        } catch (IOException ex) {
-            System.err.println("No se pudo cargar imagen de fondo");
-            System.err.println(ex.getMessage());
-        }
-        // Sprites
-        pajaro = new Sprite(new String[] {
-            "assets\\img\\yellowbird-upflap.png",
-            "assets\\img\\yellowbird-midflap.png",
-            "assets\\img\\yellowbird-downflap.png",
-        });
-        
     }//GEN-LAST:event_formWindowOpened
 
     /**
@@ -136,21 +155,23 @@ public class App extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(App.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(GameApp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(App.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(GameApp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(App.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(GameApp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(App.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(GameApp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new App().setVisible(true);
+                new GameApp().setVisible(true);
             }
         });
     }

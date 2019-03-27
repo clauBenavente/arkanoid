@@ -1,5 +1,5 @@
 
-package figuras;
+package figuras.base;
 
 import java.awt.Graphics;
 

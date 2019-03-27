@@ -8,14 +8,14 @@ import javax.sound.midi.*;
 
 /**
  * Sonido para juegos simples en clase.<br>
- * Permite reproducir sonido en ficheros de onda, de manera asincrona una
- * sola vez o en loop. <br>
+ * Permite reproducir sonido en ficheros de onda, de manera asincrona una sola
+ * vez o en loop. <br>
  * Los metodos play() y loop() inician la reproduccion de un sonido en formato
  * .wav o au. stop() para la reproduccion<br>
  * Los metodos playMidi() y loopMidi() inician la reproduccion de un sonido en
  * formato .mid. stopMidi() para la reproducción del fichero midi<br>
  *
- * Tambien permite emitir el beep del sistema.
+ * Tambien permite emitir el beep del sistema, pero ojo: ESE NO ES ASÍNCRONO.
  *
  * @author Victor
  * @version 1.1
@@ -48,32 +48,22 @@ public class StdSound {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-
         return r;
-
     }
 
     /**
-     * Un beep simple
+     * El beep del sistema. OJO: No es asíncrono.
      */
     public static void beep() {
         java.awt.Toolkit.getDefaultToolkit().beep();
     }
 
     /**
-     * Para el loop que esta sonando
-     */
-    public static void stop() {
-
-        if (soundLoop != null) {
-            soundLoop.stop();
-        }
-    }
-
-    /**
      * Reproduce un fichero de sonido (.wav o .au) asincronamente
      *
      * @param filename El nombre del fichero (.wav o .au) compatible con Java.
+     * Solo se admite wav de 16 bits sin comprimir. Au es un formato estándar de
+     * unix/linux
      */
     public static void play(String filename) {
         javax.sound.sampled.Clip sonido;
@@ -110,7 +100,57 @@ public class StdSound {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
 
+    /**
+     * Para el loop que esta sonando
+     */
+    public static void stop() {
+
+        if (soundLoop != null) {
+            soundLoop.stop();
+        }
+    }
+
+    /**
+     * Reproduce en loop un fichero de sonido midi asincronamente
+     */
+    public static void loopMidi(String filename) {
+        try {
+            sequencer = MidiSystem.getSequencer();
+            InputStream midiFile = load(filename);
+
+            sequencer.setSequence(MidiSystem.getSequence(new BufferedInputStream(midiFile)));
+            sequencer.setLoopCount(Sequencer.LOOP_CONTINUOUSLY);
+            sequencer.open();
+            sequencer.start();
+        } catch (Exception ex) {
+
+        }
+    }
+
+    /**
+     * Reproduce un fichero de sonido midi asincronamente
+     */
+    public static void playMidi(String filename) {
+        try {
+            InputStream midiFile = load(filename);;
+            sequencer = MidiSystem.getSequencer();
+            sequencer.setSequence(MidiSystem.getSequence(new BufferedInputStream(midiFile)));
+            sequencer.open();
+            sequencer.start();
+        } catch (Exception ex) {
+
+        }
+    }
+
+    /**
+     * Detiene la reproduccion del fichero midi en curso
+     */
+    public static void stopMidi() {
+        if (sequencer != null) {
+            sequencer.stop();
+        }
     }
 
 }
