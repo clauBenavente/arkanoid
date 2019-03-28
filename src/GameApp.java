@@ -106,6 +106,9 @@ public class GameApp extends javax.swing.JFrame {
         Graphics2D g = (Graphics2D) buffer.getGraphics();
         // Dejamos que la lógica desencadene el trabajo duro.
         logica.dibujarYActualizarTodo(g);  // https://u.nu/cubs
+        if (!teclasPulsadas.isEmpty()) {
+            logica.gestionarTeclas(teclasPulsadas);
+        }
         repaint();
     }
 

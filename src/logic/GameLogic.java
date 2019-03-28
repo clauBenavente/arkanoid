@@ -6,35 +6,47 @@
 package logic;
 
 import audio.StdSound;
+import figuras.Breakout;
 import figuras.Fondo;
 import figuras.Marcador;
 import figuras.base.Animable;
 import figuras.base.Dibujable;
 import figuras.base.Eliminable;
 import java.awt.Graphics;
+import java.awt.event.KeyEvent;
 import java.util.Iterator;
 import java.util.List;
 import java.util.LinkedList;
+import java.util.Set;
 
 /**
  *
  * @author victor
  */
 public class GameLogic {
+    // CONSTANTES DEL JUEGO
     public static final int NUM_VIDAS = 3;
+    // añade las constantes que estimes oportuno.
     
     private int vidas;
     private int puntos;
     
-    // Dimensiones: Asume que la ventana es de 500x600
-    
+    /** Lista de todos los objetos del juego, para dibujar, automover y eliminar */
     private List<Dibujable> listaObjetosDibujables;
+   
+    // --- Los objetos de los que quieras tener una referencia
+    Breakout breakout;
+    // TODO Añadir la pelota, una colección con los ladrillos, etc..
+   
 
     public GameLogic() {
         listaObjetosDibujables = new LinkedList<>();
         empezar();
     }
-    
+    /**
+     * Invocado en cada fotograma desde el frame
+     * @param g 
+     */
     public void dibujarYActualizarTodo(Graphics g) {    
         Iterator<Dibujable> iter = listaObjetosDibujables.iterator();
         while (true) {
@@ -52,6 +64,16 @@ public class GameLogic {
             if (objetoDelJuego instanceof Animable) { // Y si está auto-animado, lo movemos
                 ((Animable) objetoDelJuego).mover();
             }
+        } 
+    }
+    
+    /**
+     * Invocado en cada fotograma desde el frame
+     * @param teclas 
+     */
+    public void gestionarTeclas(Set<Integer> teclas) {
+        if (teclas.contains(KeyEvent.VK_LEFT)) {
+            breakout.moverIzquierda();
         }
         
     }
@@ -73,8 +95,11 @@ public class GameLogic {
             vidas = NUM_VIDAS;
             puntos = 0;
             // TODO
-            listaObjetosDibujables.add(new Fondo("assets/img/fondo2.jpg"));
-            listaObjetosDibujables.add(new Marcador(this));
+            listaObjetosDibujables.add(new Fondo("assets/img/fondo00.jpg"));
+            listaObjetosDibujables.add(new Marcador(this)); // inyección de dependencias
+            breakout = new Breakout(this); // inyección de dependencias
+            listaObjetosDibujables.add(breakout);
+            // TODO 
         }
         
         // TODO 
