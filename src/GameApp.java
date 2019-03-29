@@ -1,5 +1,6 @@
 
 import audio.StdSound;
+import figuras.Config;
 import figuras.base.Sprite;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -96,6 +97,7 @@ public class GameApp extends javax.swing.JFrame {
     @Override
     public void paint(Graphics g) {
         g.drawImage(buffer, 0, 0, null);
+        
     }
 
     /**

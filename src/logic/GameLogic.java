@@ -6,7 +6,9 @@
 package logic;
 
 import audio.StdSound;
+import figuras.Bola;
 import figuras.Breakout;
+import figuras.Config;
 import figuras.Fondo;
 import figuras.Marcador;
 import figuras.base.Animable;
@@ -36,6 +38,7 @@ public class GameLogic {
    
     // --- Los objetos de los que quieras tener una referencia
     Breakout breakout;
+    Bola bola;
     // TODO Añadir la pelota, una colección con los ladrillos, etc..
    
 
@@ -49,6 +52,7 @@ public class GameLogic {
      */
     public void dibujarYActualizarTodo(Graphics g) {    
         Iterator<Dibujable> iter = listaObjetosDibujables.iterator();
+        
         while (true) {
             if (!iter.hasNext()) { // Si no hay siguiente, salir del bucle
                 break;
@@ -64,7 +68,9 @@ public class GameLogic {
             if (objetoDelJuego instanceof Animable) { // Y si está auto-animado, lo movemos
                 ((Animable) objetoDelJuego).mover();
             }
-        } 
+        }
+        
+        
     }
     
     /**
@@ -75,6 +81,10 @@ public class GameLogic {
         if (teclas.contains(KeyEvent.VK_LEFT)) {
             breakout.moverIzquierda();
         }
+        if(teclas.contains(KeyEvent.VK_RIGHT)){
+            breakout.moverDerecha();
+        }
+        
         
     }
 
@@ -99,6 +109,8 @@ public class GameLogic {
             listaObjetosDibujables.add(new Marcador(this)); // inyección de dependencias
             breakout = new Breakout(this); // inyección de dependencias
             listaObjetosDibujables.add(breakout);
+            bola = new Bola(this);
+            listaObjetosDibujables.add(bola);
             // TODO 
         }
         

@@ -33,6 +33,7 @@ public class Fondo implements Dibujable {
     @Override
     public void dibujar(Graphics g) {
         g.drawImage(fondo, 0, 0, null);
+        
     }   
     
 }
